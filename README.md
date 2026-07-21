@@ -1,120 +1,155 @@
-# NexusERP - Documentación de Arquitectura (Fase 1)
+# NexusERP
 
-## Resumen del Proyecto
+Sistema ERP completo para pequenas y medianas empresas (PyMEs). Backend en ASP.NET Core, frontend en React, base de datos PostgreSQL, desplegable con Docker.
 
-**NexusERP** es un sistema ERP modular para PyMEs, diseñado con Clean Architecture, arquitectura modular y buenas prácticas de desarrollo de software empresarial.
+## Que es
 
-**Stack Tecnológico:**
-- Backend: ASP.NET Core 9 + Entity Framework Core
-- Frontend: React + TypeScript + Vite + Tailwind CSS
-- Base de datos: PostgreSQL
-- Infraestructura: Docker + Docker Compose
-- Autenticación: JWT + Refresh Tokens
+NexusERP ayuda a manejar todo lo relacionado con la operacion de un negocio:
 
----
+- **Clientes y Proveedores** - Crear, editar, buscar contactos con documentos, creditos y estados
+- **Productos y Catalogos** - Categorias, bodegas, precios, IVA, control de stock
+- **Ventas y Ordenes** - Crear ventas con detalle de productos, estados, numeracion automatica
+- **Compras y Ordenes de Compra** - Gestionar compras a proveedores con seguimiento
+- **Facturacion y Pagos** - Generar facturas, registrar pagos,控制 saldos pendientes
+- **Dashboard y Reportes** - Resumen de metricas, ventas por periodo, inventario por categoria
 
-## Documentos de la Fase 1
+## Stack Tecnologico
 
-| # | Documento | Descripción |
-|---|-----------|-------------|
-| 1 | [Análisis del Dominio](docs/01-domain-analysis.md) | Subdominios, entidades, reglas de negocio, flujos |
-| 2 | [Diseño de Arquitectura](docs/02-architecture-design.md) | Clean Architecture, capas, patrones, decisiones técnicas |
-| 3 | [Diseño de Módulos](docs/03-modules-design.md) | Definición de cada módulo, interfaces, dependencias |
-| 4 | [Diseño de Base de Datos](docs/04-database-design.md) | 30 tablas, columnas, tipos, restricciones, índices |
-| 5 | [Diagrama Entidad-Relación](docs/05-entity-relationship.md) | Diagramas ER, cardinalidades, integridad referencial |
-| 6 | [Reglas de Negocio](docs/06-business-rules.md) | Reglas por módulo, transacciones, estados, cálculos |
-| 7 | [Estructura de Carpetas](docs/07-folder-structure.md) | Organización del proyecto por capas y módulos |
-| 8 | [Endpoints API](docs/08-api-endpoints.md) | 99 endpoints REST documentados |
-| 9 | [Roadmap Técnico](docs/09-roadmap.md) | 6 fases, estimaciones, dependencias, criterios |
+| Capa | Tecnologia |
+|------|-----------|
+| Backend | C# / ASP.NET Core 10 / Entity Framework Core |
+| Frontend | React 19 / TypeScript / Vite / TailwindCSS |
+| Base de datos | PostgreSQL 16 |
+| Autenticacion | JWT + Refresh Tokens |
+| Infraestructura | Docker + Docker Compose |
+| Tests | xUnit + Moq + FluentAssertions |
 
----
+## Como ejecutar
 
-## Arquitectura Resumida
+### Con Docker (recomendado)
 
-```
-┌─────────────────────────────────────────────────────┐
-│                  NexusERP.sln                        │
-├─────────────────────────────────────────────────────┤
-│                                                      │
-│  ┌──────────────┐                                   │
-│  │  Api (Web)   │  ← Controllers, Middleware, DI    │
-│  └──────┬───────┘                                   │
-│         │                                            │
-│  ┌──────┴───────┐                                   │
-│  │ Application  │  ← Services, Commands, Queries    │
-│  └──────┬───────┘                                   │
-│         │                                            │
-│  ┌──────┴───────┐                                   │
-│  │   Domain     │  ← Entities, Interfaces, Rules    │
-│  └──────┬───────┘                                   │
-│         │                                            │
-│  ┌──────┴───────┐                                   │
-│  │Infrastructure│  ← EF Core, Repos, External Svc   │
-│  └──────────────┘                                   │
-│                                                      │
-└─────────────────────────────────────────────────────┘
+```bash
+docker compose up --build
 ```
 
----
+- Frontend: http://localhost:3000
+- API: http://localhost:8080
+- Base de datos: localhost:5432
 
-## Módulos del Sistema
+### Desarrollo local
 
-| Módulo | Tablas | Endpoints | Entidades |
-|--------|--------|-----------|-----------|
-| Security | 5 | 18 | User, Role, UserRole, RefreshToken, AuditLog |
-| People | 9 | 22 | Person, Employee, Department, JobPosition, Client, Supplier |
-| Inventory | 5 | 10 | Category, Product, Warehouse, Inventory, InventoryMovement |
-| Purchases | 4 | 11 | PurchaseOrder, Purchase, Details |
-| Sales | 4 | 10 | Order, Sale, Details |
-| Billing | 3 | 7 | Invoice, Payment, Details |
-| Dashboard | - | 1 | Metrics |
-| Reports | - | 4 | Sales, Purchases, Inventory, Client |
-| Settings | 1 | 4 | SystemConfiguration |
-| **Total** | **30** | **99** | |
+**Backend:**
+```bash
+# Asegurarse de que PostgreSQL este corriendo
+dotnet run --project src/NexusERP.Api --urls http://localhost:5000
+```
 
----
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## Base de Datos
+### Credenciales de prueba
 
-- **30 tablas** en total
-- **Relaciones**: 1:1, 1:N, M:N, Self-Reference
-- **Integridad referencial**: CASCADE, RESTRICT, SET NULL
-- **Índices**: Optimizados para consultas frecuentes
-- **Soft delete**: Todas las entidades principales
-- **Auditoría**: Tracking de cambios con valores anteriores/nuevos
+| Campo | Valor |
+|-------|-------|
+| Email | admin@nexuserp.com |
+| Contrasena | Admin123! |
 
----
+## Estructura del proyecto
 
-## Decisiones Técnicas Clave
+```
+NexusERP/
+├── src/
+│   ├── NexusERP.Domain/           # Entidades, interfaces, reglas de negocio
+│   ├── NexusERP.Application/      # Commands, Queries, DTOs, validaciones (MediatR CQRS)
+│   ├── NexusERP.Infrastructure/   # EF Core, repositorios, servicios externos
+│   └── NexusERP.Api/              # Controllers, middleware, configuracion
+├── frontend/
+│   └── src/
+│       ├── components/            # DataTable, Modal (reutilizables)
+│       ├── contexts/              # AuthContext (JWT)
+│       ├── layouts/               # Layout con sidebar
+│       ├── pages/                 # 14 paginas con CRUD completo
+│       ├── services/              # API axios con interceptor JWT
+│       └── types/                 # TypeScript interfaces
+├── tests/
+│   └── NexusERP.Tests/           # 37 tests unitarios
+├── docs/                          # 9 documentos de arquitectura
+├── docker/                        # Dockerfile para API
+├── docker-compose.yml             # Stack completo: PostgreSQL + API + Frontend
+└── docker-compose.dev.yml         # Solo PostgreSQL para desarrollo local
+```
 
-| Decisión | Alternativa Rechazada | Justificación |
-|----------|----------------------|---------------|
-| Clean Architecture | N-Capas | Mejor separación de concerns, testing |
-| Monolito Modular | Microservicios | Simpleza para PyME, menos infraestructura |
-| EF Core | Dapper | ORM nativo, migraciones, change tracking |
-| FluentValidation | DataAnnotations | Más potente, separación de validaciones |
-| Mappers manuales | AutoMapper | Más explícito, mejor rendimiento |
-| MediatR | Servicios directos | CQRS ligero, pipeline behaviors |
-| Result pattern | Excepciones | Más explícito, control de flujo funcional |
+## Modulos implementados
 
----
+| Modulo | Crear | Editar | Eliminar | Buscar | Paginacion |
+|--------|-------|--------|----------|--------|-----------|
+| Clientes | Si | Si | Soft delete | Si | Si |
+| Proveedores | Si | Si | Soft delete | Si | Si |
+| Productos | Si | Si | Soft delete | Si | Si |
+| Categorias | Si | Si | - | - | Lista plana |
+| Bodegas | Si | - | - | - | Lista plana |
+| Ordenes | Si | Estado | - | Si | Si |
+| Ventas | Si | Estado | - | - | Si |
+| Ordenes de Compra | Si | Estado | - | - | Si |
+| Compras | Si | Estado | - | - | Si |
+| Facturas | Si | Estado | - | Filtro | Si |
+| Pagos | Si | - | - | - | Si |
+| Reportes | - | - | - | - | - |
+| Dashboard | - | - | - | - | - |
 
-## Próximos Pasos
+## Arquitectura
 
-1. Crear repositorio en GitHub
-2. Implementar Fase 2: Infraestructura Base
-3. Configurar Docker Compose
-4. Implementar Fase 3: Módulo de Seguridad
-5. Continuar con las fases del roadmap
+El proyecto sigue **Clean Architecture** con 4 capas separadas:
 
----
+```
+Domain (reglas de negocio)
+   ↑
+Application (logica de uso - Commands/Queries con MediatR)
+   ↑
+Infrastructure (acceso a datos - EF Core + PostgreSQL)
+   ↑
+Api (HTTP - Controllers + JWT)
+   ↑
+Frontend (React + TypeScript)
+```
 
-## Estadísticas del Diseño
+**Patrones utilizados:**
+- Repository Pattern (acceso a datos abstracto)
+- Unit of Work (transacciones agrupadas)
+- CQRS con MediatR (Commands separados de Queries)
+- FluentValidation (validacion de datos)
+- Result Pattern (manejo de errores sin excepciones)
+- Soft Delete (eliminacion logica)
 
-- **Archivos de documentación**: 9
-- **Tablas de base de datos**: 30
-- **Endpoints API**: 99
-- **Entidades de dominio**: ~35
-- **Interfaces de repositorio**: ~20
-- **Módulos**: 10
-- **Reglas de negocio documentadas**: ~80
+## Tests
+
+37 tests unitarios cubriendo:
+- Validadores de CreateInvoice, CreatePayment, CreateSale, CreatePurchaseOrder
+- Handlers de CreateInvoice, CreatePayment, CreateSale
+- Queries de GetInvoiceById con mapeo de Client/Supplier/Person
+
+```bash
+dotnet test tests/NexusERP.Tests/
+```
+
+## Documentacion
+
+9 documentos de arquitectura en la carpeta `docs/`:
+
+1. Analisis del Dominio
+2. Diseno de Arquitectura
+3. Diseno de Modulos
+4. Diseno de Base de Datos (30 tablas)
+5. Diagrama Entidad-Relacion
+6. Reglas de Negocio
+7. Estructura de Carpetas
+8. Endpoints API (99 endpoints)
+9. Roadmap Tecnico
+
+## Licencia
+
+Proyecto privado.
