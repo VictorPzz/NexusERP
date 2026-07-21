@@ -1,6 +1,6 @@
 # NexusERP
 
-Sistema ERP completo para pequenas y medianas empresas (PyMEs). Backend en ASP.NET Core, frontend en React, base de datos PostgreSQL, desplegable con Docker.
+Sistema ERP completo para pequeñas y medianas empresas (PyMEs). Backend en ASP.NET Core, frontend en React, base de datos PostgreSQL, desplegable con Docker.
 
 ## Que es
 
