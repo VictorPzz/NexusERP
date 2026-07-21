@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NexusERP.Api/NexusERP.Api.csproj" />
+    <Project Path="src/NexusERP.Application/NexusERP.Application.csproj" />
+    <Project Path="src/NexusERP.Domain/NexusERP.Domain.csproj" />
+    <Project Path="src/NexusERP.Infrastructure/NexusERP.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NexusERP.Tests/NexusERP.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,21 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+WORKDIR /src
+
+COPY src/NexusERP.Domain/NexusERP.Domain.csproj src/NexusERP.Domain/
+COPY src/NexusERP.Application/NexusERP.Application.csproj src/NexusERP.Application/
+COPY src/NexusERP.Infrastructure/NexusERP.Infrastructure.csproj src/NexusERP.Infrastructure/
+COPY src/NexusERP.Api/NexusERP.Api.csproj src/NexusERP.Api/
+RUN dotnet restore src/NexusERP.Api/NexusERP.Api.csproj
+
+COPY src/NexusERP.Domain/ src/NexusERP.Domain/
+COPY src/NexusERP.Application/ src/NexusERP.Application/
+COPY src/NexusERP.Infrastructure/ src/NexusERP.Infrastructure/
+COPY src/NexusERP.Api/ src/NexusERP.Api/
+RUN dotnet publish src/NexusERP.Api/NexusERP.Api.csproj -c Release -o /app/publish --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
+WORKDIR /app
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "NexusERP.Api.dll"]
