@@ -10,7 +10,7 @@ NexusERP ayuda a manejar todo lo relacionado con la operacion de un negocio:
 - **Productos y Catalogos** - Categorias, bodegas, precios, IVA, control de stock
 - **Ventas y Ordenes** - Crear ventas con detalle de productos, estados, numeracion automatica
 - **Compras y Ordenes de Compra** - Gestionar compras a proveedores con seguimiento
-- **Facturacion y Pagos** - Generar facturas, registrar pagos,控制 saldos pendientes
+- **Facturacion y Pagos** - Generar facturas, registrar pagos,saldos pendientes
 - **Dashboard y Reportes** - Resumen de metricas, ventas por periodo, inventario por categoria
 
 ## Stack Tecnologico
